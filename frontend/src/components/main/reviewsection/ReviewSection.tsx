@@ -1,6 +1,7 @@
 import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import reviewApi from "apis/review";
+import Spinner from "components/Spinner";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import ReviewText from "./ReviewText";
@@ -17,7 +18,7 @@ function ReviewSection() {
 	useEffect(() => {
 		const getReview = async () => {
 			const review = await reviewApi.getLatestReviews();
-			setReviews(review.data.reviews);
+			if (review.data) setReviews(review.data.reviews);
 		};
 		getReview();
 	}, []);
@@ -28,17 +29,23 @@ function ReviewSection() {
 	};
 
 	return (
-		reviews && (
-			<Section id="hi">
-				<Button icon={faChevronRight} onClick={() => handleScroll()} direction="right" />
-				<Button icon={faChevronLeft} onClick={() => handleScroll("left")} />
+		<Section id="hi">
+			{reviews.length > 0 ? (
+				<>
+					<Button icon={faChevronRight} onClick={() => handleScroll()} direction="right" />
+					<Button icon={faChevronLeft} onClick={() => handleScroll("left")} />
+					<Container>
+						{reviews.slice(0, 10).map((review, idx) => (
+							<ReviewText review={review} key={idx} />
+						))}
+					</Container>
+				</>
+			) : (
 				<Container>
-					{reviews.slice(0, 10).map((review, idx) => (
-						<ReviewText review={review} key={idx} />
-					))}
+					<Spinner />
 				</Container>
-			</Section>
-		)
+			)}
+		</Section>
 	);
 }
 

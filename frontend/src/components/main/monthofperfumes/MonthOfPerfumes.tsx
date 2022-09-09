@@ -1,4 +1,5 @@
 import perfumeApi from "apis/perfume";
+import Spinner from "components/Spinner";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import MonthPerfume from "./MonthPerfume";
@@ -15,16 +16,18 @@ function MonthOfPerfumes() {
 	}, []);
 
 	return (
-		perfumes && (
-			<Section>
-				<Title>이 달의 인기 향수</Title>
-				<Container>
-					{perfumes.map((perfume, idx) => (
+		<Section>
+			<Title>이 달의 인기 향수</Title>
+			{perfumes ? (
+				perfumes.map((perfume, idx) => (
+					<Container>
 						<MonthPerfume perfume={perfume} key={idx} />
-					))}
-				</Container>
-			</Section>
-		)
+					</Container>
+				))
+			) : (
+				<Spinner />
+			)}
+		</Section>
 	);
 }
 
